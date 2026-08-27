@@ -19,9 +19,20 @@ jobs:
         run: |
           mkdir mc_server
           cd mc_server
-          wget -O server.jar https://api.purpurmc.org/v2/purpur/1.21.1/latest/download
+          echo "⬇️ Lade Server herunter..."
+          wget -q https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -O server.jar
           echo "eula=true" > eula.txt
-          wget -O playit https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64
+          echo "⬇️ Lade Playit Cloud-Tunnel herunter..."
+          wget -q https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 -O playit
           chmod +x playit
+          echo ""
+          echo "=========================================================="
+          echo "🌐 STARTE CLOUD-TUNNEL (PLAYIT.GG)"
+          echo "=========================================================="
           ./playit &
+          sleep 4
+          echo ""
+          echo "=========================================================="
+          echo "🚀 STARTE MINECRAFT SERVER 1.21.1 (6 GB RAM)"
+          echo "=========================================================="
           java -Xms4G -Xmx6G -jar server.jar nogui
