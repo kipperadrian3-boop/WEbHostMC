@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebHostMC • Minecraft Cloud Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 1. LOGIN SCREEN -->
+  <div id="login-screen" class="login-wrapper">
+    <div class="login-box">
+      <div class="login-header">
+        <div class="brand-icon-big">⛏️</div>
+        <h1>WebHostMC</h1>
+        <p>Melde dich an, um deinen Server zu verwalten</p>
+      </div>
+
+      <form id="login-form">
+        <div class="input-group">
+          <label for="login-username">Benutzername</label>
+          <input type="text" id="login-username" placeholder="z. B. admin" value="admin" required autocomplete="username"/>
+        </div>
+
+        <div class="input-group">
+          <label for="login-password">Passwort</label>
+          <input type="password" id="login-password" placeholder="Passwort eingeben" value="admin" required autocomplete="current-password"/>
+        </div>
+
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" checked/> Angemeldet bleiben
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-login" id="btn-login">
+          <span>Einloggen</span> ➔
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <span>Kostenloser 24/7 Cloud Host • WebHostMC</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 2. MAIN DASHBOARD (NACH DEM LOGIN) -->
+  <div id="dashboard-screen" class="app-container" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⛏️</div>
+        <div class="brand-text">
+          <h2>WebHostMC</h2>
+          <span>Cloud Control</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <span class="icon">📊</span> Übersicht
+        </button>
+        <button class="nav-item" data-tab="console">
+          <span class="icon">💻</span> Live-Konsole
+        </button>
+        <button class="nav-item" data-tab="players">
+          <span class="icon">👥</span> Spieler (<span id="player-count-badge">2</span>)
+        </button>
+        <button class="nav-item" data-tab="plugins">
+          <span class="icon">🧩</span> Plugins & Mods
+        </button>
+        <button class="nav-item" data-tab="files">
+          <span class="icon">📁</span> Dateien & Welten
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <span class="icon">⚙️</span> Einstellungen
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">👑</div>
+          <div class="user-info">
+            <b id="logged-user-name">Admin</b>
+            <span>Server Owner</span>
+          </div>
+          <button class="logout-btn" id="btn-logout" title="Abmelden">🚪</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="server-title-group">
+          <div class="server-icon-large">🟩</div>
+          <div>
+            <h1 id="server-name">Mein Survival Cloud Server</h1>
+            <div class="server-address">
+              <span id="server-ip">play.webhostmc.cloud:25565</span>
+              <button class="copy-btn" id="copy-ip-btn" title="IP kopieren">📋 Kopieren</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="server-controls">
+          <div class="status-pill" id="status-pill">
+            <span class="status-dot"></span>
+            <span id="status-text">ONLINE</span>
+          </div>
+          <button class="btn btn-start" id="btn-start">▶ Starten</button>
+          <button class="btn btn-restart" id="btn-restart">🔄 Neustart</button>
+          <button class="btn btn-stop" id="btn-stop">⏹ Stoppen</button>
+        </div>
+      </header>
+
+      <!-- Tabs Container -->
+      <div class="tab-container">
+        
+        <!-- Tab: Dashboard -->
+        <section id="tab-dashboard" class="tab-pane active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>RAM AUSLASTUNG</span>
+                <span>🧠</span>
+              </div>
+              <div class="stat-value" id="ram-text">4.2 / 16.0 GB</div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="ram-bar" style="width: 26%;"></div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>CPU AUSLASTUNG</span>
+                <span>⚡</span>
+              </div>
+              <div class="stat-value" id="cpu-text">12 %</div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="cpu-bar" style="width: 12%;"></div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>SPIELER ONLINE</span>
+                <span>🎮</span>
+              </div>
+              <div class="stat-value" id="players-text">2 / 50</div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="players-bar" style="width: 4%;"></div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>PERFORMANCE</span>
+                <span>🟢</span>
+              </div>
+              <div class="stat-value" id="tps-text">20.0 TPS</div>
+              <div class="progress-bar">
+                <div class="progress-fill tps-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini Console Box -->
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Live-Konsole Vorschau</h3>
+              <span class="tag">Paper 1.21.1</span>
+            </div>
+            <div class="console-box mini-console" id="mini-console-log"></div>
+          </div>
+        </section>
+
+        <!-- Tab: Full Console -->
+        <section id="tab-console" class="tab-pane">
+          <div class="content-card full-height-card">
+            <div class="card-header">
+              <h3>Echtzeit Server Konsole</h3>
+              <button class="btn btn-secondary" id="clear-console">Leeren</button>
+            </div>
+            <div class="console-box" id="full-console-log"></div>
+            <form class="console-input-group" id="console-form">
+              <span class="prompt-symbol">></span>
+              <input type="text" id="console-input" placeholder="Befehl eingeben (z. B. 'op Spieler', 'time set day', 'gamemode creative')..." autocomplete="off"/>
+              <button type="submit" class="btn btn-primary">Senden</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Tab: Players -->
+        <section id="tab-players" class="tab-pane">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Verbundene Spieler</h3>
+              <input type="text" placeholder="Spieler suchen..." class="search-input" id="player-search"/>
+            </div>
+            <table class="players-table">
+              <thead>
+                <tr>
+                  <th>Skin</th>
+                  <th>Spielername</th>
+                  <th>Rang</th>
+                  <th>Ping</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="player-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Tab: Plugins -->
+        <section id="tab-plugins" class="tab-pane">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>1-Klick Plugin Installer</h3>
+              <span class="tag">Spigot / Paper</span>
+            </div>
+            <div class="plugins-grid">
+              <div class="plugin-card">
+                <div class="plugin-info">
+                  <h4>EssentialsX</h4>
+                  <p>Grundlegende Befehle (/home, /spawn, /tpa, Geld-System)</p>
+                </div>
+                <button class="btn btn-installed">✅ Installiert</button>
+              </div>
+              <div class="plugin-card">
+                <div class="plugin-info">
+                  <h4>WorldEdit</h4>
+                  <p>Schnelles Bauen und Terraforming mit der Holzaxt</p>
+                </div>
+                <button class="btn btn-installed">✅ Installiert</button>
+              </div>
+              <div class="plugin-card">
+                <div class="plugin-info">
+                  <h4>LuckPerms</h4>
+                  <p>Berechtigungs- und Ränge-System</p>
+                </div>
+                <button class="btn btn-primary btn-install-plugin">Installieren</button>
+              </div>
+              <div class="plugin-card">
+                <div class="plugin-info">
+                  <h4>Chunky</h4>
+                  <p>Automatisches Chunk-Vorladen gegen Server-Lags</p>
+                </div>
+                <button class="btn btn-primary btn-install-plugin">Installieren</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Files -->
+        <section id="tab-files" class="tab-pane">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Dateimanager (Welten, Plugins & Configs)</h3>
+              <button class="btn btn-primary">⬆ Welt hochladen (ZIP)</button>
+            </div>
+            <div class="file-list">
+              <div class="file-item">📁 <b>world/</b> <span class="file-size">148 MB</span></div>
+              <div class="file-item">📁 <b>world_nether/</b> <span class="file-size">52 MB</span></div>
+              <div class="file-item">📁 <b>plugins/</b> <span class="file-size">14 Dateien</span></div>
+              <div class="file-item">📄 <b>server.properties</b> <span class="file-size">2.3 KB</span></div>
+              <div class="file-item">📄 <b>paper.yml</b> <span class="file-size">9.1 KB</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab: Settings -->
+        <section id="tab-settings" class="tab-pane">
+          <div class="content-card">
+            <div class="card-header">
+              <h3>Server Einstellungen</h3>
+            </div>
+            <div class="settings-form">
+              <div class="form-row">
+                <label>Spielmodus</label>
+                <select class="form-select">
+                  <option>Survival (Überleben)</option>
+                  <option>Creative (Kreativ)</option>
+                  <option>Hardcore</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Schwierigkeitsgrad</label>
+                <select class="form-select">
+                  <option>Normal</option>
+                  <option>Einfach</option>
+                  <option>Schwer</option>
+                  <option>Friedlich</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>PvP Erlaubt</label>
+                <input type="checkbox" checked style="width: 20px; height: 20px; accent-color: #10b981;"/>
+              </div>
+              <div class="form-row">
+                <label>Server MOTD</label>
+                <input type="text" class="form-input" value="§a§lMein Cloud Server §7| §e24/7 Online"/>
+              </div>
+              <button class="btn btn-primary" style="margin-top: 16px;">💾 Einstellungen speichern</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

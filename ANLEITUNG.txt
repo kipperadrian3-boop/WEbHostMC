@@ -1,0 +1,44 @@
+======================================================================
+      🌐 DEINE EIGENE MINECRAFT HOSTING-WEBSITE (WEBHOSTMC)
+    100% GRATIS • EIGENES GITHUB REPO • WELTWEIT ONLINE ERREICHBAR
+======================================================================
+
+Ziel-Repository:
+https://github.com/kipperadrian3-boop/WEbHostMC.git
+
+
+----------------------------------------------------------------------
+👶 SCHRITT 1: DATEIEN IN DEIN GITHUB REPO HOCHLADEN
+----------------------------------------------------------------------
+1. Mache einen Doppelklick auf die Datei:
+   👉 PUSH_ZU_GITHUB.bat
+2. Warte kurz, bis dort "FERTIG HOCHGELADEN" steht.
+3. Deine Website ist jetzt vollständig auf GitHub gespeichert!
+
+
+----------------------------------------------------------------------
+👶 SCHRITT 2: SEITE 100% GRATIS ONLINE STELLEN (Render.com)
+----------------------------------------------------------------------
+(Damit deine Website eine weltweite Internetadresse bekommt – 0,00 €)
+
+1. Gehe auf: https://render.com
+2. Klicke oben rechts auf "Sign In" / "Get Started" ➡️ wähle "GitHub"!
+3. Klicke auf den blauen Button "New +" ➡️ wähle "Web Service".
+4. Wähle dein Repository: "WEbHostMC" aus.
+5. Klicke ganz unten auf "Deploy Web Service"!
+
+
+----------------------------------------------------------------------
+🎉 FERTIG! DEINE EIGENE HOSTING-SEITE IST JETZT ONLINE!
+----------------------------------------------------------------------
+Du erhältst eine weltweite Adresse wie:
+👉 https://webhostmc.onrender.com
+
+Zugangsdaten zum Einloggen auf deiner Website:
+• Benutzername:  admin
+• Passwort:      admin
+(Oder jeder beliebige Name)
+
+Von dort aus kannst du deinen Server jederzeit starten, stoppen,
+Befehle eingeben und Plugins verwalten – auch vom Handy aus!
+======================================================================
