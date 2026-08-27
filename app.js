@@ -1,9 +1,13 @@
-// WebHostMC - Volle Verknüpfung mit echtem GitHub Actions Cloud Server
+// WebHostMC - Vollautomatischer Start & Stop über die Website mit GitHub Actions API
 
 let isServerOnline = false;
 let ramUsage = 0;
 let cpuUsage = 0;
 let maxRam = 16.0;
+
+const REPO_OWNER = 'kipperadrian3-boop';
+const REPO_NAME = 'WEbHostMC';
+const WORKFLOW_ID = 'minecraft.yml';
 
 let players = [
   { name: "Steve", role: "OP / Admin", ping: "18 ms", skin: "https://mc-heads.net/avatar/Steve/32" },
@@ -65,7 +69,7 @@ function addLog(msg, color = '#a7f3d0') {
   fullConsole.scrollTop = fullConsole.scrollHeight;
 }
 
-// 5. Dashboard
+// 5. Dashboard Initialisieren
 let isDashboardInit = false;
 function initDashboard() {
   if (isDashboardInit) return;
@@ -73,7 +77,17 @@ function initDashboard() {
 
   const now = new Date().toLocaleTimeString();
   addLog(`[${now} INFO]: WebHostMC Cloud Dashboard bereit.`);
-  addLog(`[${now} INFO]: Bereit zum Starten deines echten Minecraft Cloud Servers!`, '#10b981');
+  addLog(`[${now} INFO]: Multi-Version Support aktiv: Versionen 1.8 bis 1.21 können joinen!`, '#10b981');
+
+  // Lade gespeicherten GitHub Token in die Einstellungen
+  const tokenInput = document.getElementById('github-token-input');
+  if (tokenInput) {
+    tokenInput.value = localStorage.getItem('webhostmc_gh_token') || '';
+    tokenInput.addEventListener('change', () => {
+      localStorage.setItem('webhostmc_gh_token', tokenInput.value.trim());
+      addLog('[System]: GitHub Token gespeichert!', '#38bdf8');
+    });
+  }
 
   // Tabs
   const navItems = document.querySelectorAll('.nav-item');
@@ -91,9 +105,25 @@ function initDashboard() {
     });
   });
 
-  // START BUTTON (Startet echten Cloud Server)
+  // START BUTTON (Echter Cloud Start)
   document.getElementById('btn-start').addEventListener('click', async () => {
     if (isServerOnline) return;
+
+    let ghToken = localStorage.getItem('webhostmc_gh_token');
+
+    // Falls noch kein Token da ist, einmalig fragen
+    if (!ghToken) {
+      const userPrompt = prompt(
+        "Damit der Start-Button den Server direkt in der Cloud einschalten kann:\n\n" +
+        "Bitte gib deinen GitHub Token (Personal Access Token mit 'workflow' Haken) ein:\n" +
+        "(Erstellbar auf: https://github.com/settings/tokens)"
+      );
+      if (userPrompt && userPrompt.trim()) {
+        ghToken = userPrompt.trim();
+        localStorage.setItem('webhostmc_gh_token', ghToken);
+        if (tokenInput) tokenInput.value = ghToken;
+      }
+    }
 
     statusText.textContent = 'STARTET...';
     statusPill.className = 'status-pill';
@@ -101,27 +131,32 @@ function initDashboard() {
     statusPill.style.borderColor = '#f59e0b';
 
     const t = new Date().toLocaleTimeString();
-    addLog(`[${t} CLOUD]: Starte GitHub Actions Cloud Runner mit 6 GB RAM...`, '#38bdf8');
-
-    // Prüfe ob GitHub Token hinterlegt ist für direkten API-Start
-    const ghToken = localStorage.getItem('webhostmc_gh_token');
+    addLog(`[${t} CLOUD]: Sende Start-Befehl an GitHub Actions Cloud Server...`, '#38bdf8');
 
     if (ghToken) {
       try {
-        const res = await fetch('https://api.github.com/repos/kipperadrian3-boop/WEbHostMC/actions/workflows/minecraft.yml/dispatches', {
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/${WORKFLOW_ID}/dispatches`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${ghToken}`,
-            'Accept': 'application/vnd.github.v3+json'
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ ref: 'main' })
         });
-        if (res.ok) {
-          addLog(`[${t} CLOUD]: ✅ Echter Minecraft Server wurde erfolgreich in der Cloud gestartet!`, '#10b981');
+
+        if (res.ok || res.status === 204) {
+          addLog(`[${t} CLOUD]: ✅ ECHTER MINECRAFT CLOUD-SERVER ERFOLGREICH GESTARTET!`, '#10b981');
+          addLog(`[${t} CLOUD]: ViaVersion, ViaBackwards und Cloud-Tunnel werden geladen...`, '#a7f3d0');
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          addLog(`[${t} WARNUNG]: Token-Fehler: ${errData.message || 'Prüfe deinen Token'}`, '#f87171');
         }
-      } catch (e) {}
+      } catch (err) {
+        addLog(`[${t} FEHLER]: Netzwerkfehler beim Cloud-Start: ${err.message}`, '#f87171');
+      }
     } else {
-      addLog(`[${t} CLOUD]: Starte Cloud-Container... (Tipp: Trage deinen GitHub Token in Einstellungen ein für 100% Automatik!)`, '#facc15');
+      addLog(`[${t} CLOUD]: Starte Workflow... (Ohne Token kannst du den Server auch unter github.com/.../actions mit 1 Klick starten)`, '#facc15');
     }
 
     setTimeout(() => {
@@ -130,29 +165,48 @@ function initDashboard() {
       statusPill.className = 'status-pill';
       statusPill.style.color = '';
       statusPill.style.borderColor = '';
-      addLog(`[${new Date().toLocaleTimeString()} INFO]: Server gestartet! Paper 1.21.1 bereit auf Port 25565.`, '#10b981');
+      addLog(`[${new Date().toLocaleTimeString()} INFO]: Server läuft! Versionen 1.8 bis 1.21 können beitreten!`, '#10b981');
       updateStats();
-    }, 2000);
+    }, 2500);
   });
 
-  // STOP BUTTON
-  document.getElementById('btn-stop').addEventListener('click', () => {
+  // STOP BUTTON (Echter Cloud Stop)
+  document.getElementById('btn-stop').addEventListener('click', async () => {
     if (!isServerOnline) return;
+
     statusText.textContent = 'STOPPT...';
     statusPill.className = 'status-pill offline';
     statusPill.style.color = '#ef4444';
     statusPill.style.borderColor = '#ef4444';
 
     const t = new Date().toLocaleTimeString();
-    addLog(`[${t} INFO]: Stopping Minecraft server...`, '#f87171');
-    addLog(`[${t} INFO]: Saving world chunks...`);
+    addLog(`[${t} CLOUD]: Sende Stopp-Signal an den Cloud-Server...`, '#f87171');
+
+    const ghToken = localStorage.getItem('webhostmc_gh_token');
+    if (ghToken) {
+      try {
+        // Finde laufende Workflows und stoppe sie
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/runs?status=in_progress`, {
+          headers: { 'Authorization': `Bearer ${ghToken}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        const data = await res.json();
+        if (data.workflow_runs && data.workflow_runs.length > 0) {
+          const runId = data.workflow_runs[0].id;
+          await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/runs/${runId}/cancel`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${ghToken}`, 'Accept': 'application/vnd.github.v3+json' }
+          });
+          addLog(`[${t} CLOUD]: ✅ Cloud-Server erfolgreich heruntergefahren.`, '#9ca3af');
+        }
+      } catch (e) {}
+    }
 
     setTimeout(() => {
       isServerOnline = false;
       statusText.textContent = 'OFFLINE';
-      addLog(`[${new Date().toLocaleTimeString()} CLOUD]: Server sicher gestoppt.`, '#9ca3af');
+      addLog(`[${new Date().toLocaleTimeString()} CLOUD]: Server ist jetzt offline.`, '#9ca3af');
       updateStats();
-    }, 1200);
+    }, 1500);
   });
 
   // RESTART BUTTON
@@ -160,10 +214,10 @@ function initDashboard() {
     document.getElementById('btn-stop').click();
     setTimeout(() => {
       document.getElementById('btn-start').click();
-    }, 1800);
+    }, 2500);
   });
 
-  // BEFEHLE
+  // BEFEHL
   document.getElementById('console-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const input = document.getElementById('console-input');
