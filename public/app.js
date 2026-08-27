@@ -25,6 +25,7 @@ const fullConsole = document.getElementById('full-console-log');
 const statusPill = document.getElementById('status-pill');
 const statusText = document.getElementById('status-text');
 
+// 1. Session prüfen
 function checkAuth() {
   const savedUser = localStorage.getItem('webhostmc_user');
   if (savedUser) {
@@ -38,6 +39,7 @@ function checkAuth() {
   }
 }
 
+// 2. Login
 loginForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const username = document.getElementById('login-username').value.trim() || 'Admin';
@@ -45,11 +47,13 @@ loginForm.addEventListener('submit', (e) => {
   checkAuth();
 });
 
+// 3. Logout
 btnLogout.addEventListener('click', () => {
   localStorage.removeItem('webhostmc_user');
   checkAuth();
 });
 
+// 4. Logs
 function addLog(msg, color = '#a7f3d0') {
   if (!miniConsole || !fullConsole) return;
   const d1 = document.createElement('div');
@@ -65,6 +69,7 @@ function addLog(msg, color = '#a7f3d0') {
   fullConsole.scrollTop = fullConsole.scrollHeight;
 }
 
+// 5. Dashboard Initialisieren
 let isDashboardInit = false;
 function initDashboard() {
   if (isDashboardInit) return;
@@ -74,6 +79,7 @@ function initDashboard() {
   addLog(`[${now} INFO]: WebHostMC Cloud Dashboard bereit.`);
   addLog(`[${now} INFO]: Multi-Version Support aktiv: Versionen 1.8 bis 1.21 können joinen!`, '#10b981');
 
+  // Lade gespeicherten GitHub Token in die Einstellungen
   const tokenInput = document.getElementById('github-token-input');
   if (tokenInput) {
     tokenInput.value = localStorage.getItem('webhostmc_gh_token') || '';
@@ -83,6 +89,7 @@ function initDashboard() {
     });
   }
 
+  // Tabs
   const navItems = document.querySelectorAll('.nav-item');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -98,11 +105,13 @@ function initDashboard() {
     });
   });
 
+  // START BUTTON (Echter Cloud Start)
   document.getElementById('btn-start').addEventListener('click', async () => {
     if (isServerOnline) return;
 
     let ghToken = localStorage.getItem('webhostmc_gh_token');
 
+    // Falls noch kein Token da ist, einmalig fragen
     if (!ghToken) {
       const userPrompt = prompt(
         "Damit der Start-Button den Server direkt in der Cloud einschalten kann:\n\n" +
@@ -161,6 +170,7 @@ function initDashboard() {
     }, 2500);
   });
 
+  // STOP BUTTON (Echter Cloud Stop)
   document.getElementById('btn-stop').addEventListener('click', async () => {
     if (!isServerOnline) return;
 
@@ -198,6 +208,7 @@ function initDashboard() {
     }, 1500);
   });
 
+  // RESTART BUTTON
   document.getElementById('btn-restart').addEventListener('click', () => {
     document.getElementById('btn-stop').click();
     setTimeout(() => {
@@ -205,6 +216,7 @@ function initDashboard() {
     }, 2500);
   });
 
+  // BEFEHL
   document.getElementById('console-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const input = document.getElementById('console-input');
@@ -227,11 +239,20 @@ function initDashboard() {
     }
   });
 
+  // CLEAR
   document.getElementById('clear-console').addEventListener('click', () => {
     miniConsole.innerHTML = '';
     fullConsole.innerHTML = '';
   });
 
+  // IP Laden & Speichern
+  const serverIpElem = document.getElementById('server-ip');
+  const savedIp = localStorage.getItem('webhostmc_custom_ip');
+  if (savedIp && serverIpElem) {
+    serverIpElem.textContent = savedIp;
+  }
+
+  // IP KOPIEREN
   document.getElementById('copy-ip-btn').addEventListener('click', () => {
     const ip = document.getElementById('server-ip').textContent;
     navigator.clipboard.writeText(ip).then(() => {
@@ -241,6 +262,21 @@ function initDashboard() {
     });
   });
 
+  // IP ÄNDERN
+  const editIpBtn = document.getElementById('edit-ip-btn');
+  if (editIpBtn) {
+    editIpBtn.addEventListener('click', () => {
+      const currentIp = serverIpElem.textContent;
+      const newIp = prompt("Gib die neue Server-IP Adresse ein:", currentIp);
+      if (newIp && newIp.trim()) {
+        serverIpElem.textContent = newIp.trim();
+        localStorage.setItem('webhostmc_custom_ip', newIp.trim());
+        addLog(`[System]: Server-IP aktualisiert auf: ${newIp.trim()}`, '#38bdf8');
+      }
+    });
+  }
+
+  // PLUGINS
   document.querySelectorAll('.btn-install-plugin').forEach(btn => {
     btn.addEventListener('click', function() {
       this.textContent = '⏳ Installiere...';

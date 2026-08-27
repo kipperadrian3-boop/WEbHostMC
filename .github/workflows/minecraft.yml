@@ -15,37 +15,31 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Start Minecraft Server with All-Version Protocol Fix
+      - name: Start Minecraft Server with Fixed IP
         run: |
           mkdir -p mc_server/plugins
           cd mc_server
 
-          echo "⬇️ 1. Lade Purpur 1.21.1 Server herunter..."
+          echo "⬇️ 1. Lade Purpur 1.21.1 Server..."
           curl -sL https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -o server.jar
           echo "eula=true" > eula.txt
 
-          echo "⬇️ 2. Lade ViaVersion & Protocol Plugins (Damit JEDE Version joinen kann)..."
-          # ViaVersion (für alle neueren Versionen)
+          echo "⬇️ 2. Lade Multi-Version Plugins (ViaVersion & ViaBackwards)..."
           curl -sL https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar -o plugins/ViaVersion.jar
-          # ViaBackwards (für alle älteren Versionen bis 1.16, 1.12 etc.)
           curl -sL https://github.com/ViaVersion/ViaBackwards/releases/download/5.2.1/ViaBackwards-5.2.1.jar -o plugins/ViaBackwards.jar
-          # ViaRewind (für Versionen bis 1.8 / 1.7)
           curl -sL https://github.com/ViaVersion/ViaRewind/releases/download/3.0.7/ViaRewind-3.0.7.jar -o plugins/ViaRewind.jar
-
-          echo "Installierte Plugins:"
-          ls -la plugins/
 
           echo "⬇️ 3. Lade Cloud-Tunnel herunter..."
           curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz | tar -xz
           chmod +x bore
 
-          # Starte den Tunnel
-          ./bore local 25565 --to bore.pub > bore.log 2>&1 &
+          # Starte den Tunnel mit fester Port-Anfrage (33305)
+          ./bore local 25565 --to bore.pub --port 33305 > bore.log 2>&1 &
           sleep 4
 
           echo ""
           echo "=========================================================="
-          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN ERLAUBT):"
+          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN):"
           echo "=========================================================="
           cat bore.log
           echo "=========================================================="

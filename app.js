@@ -246,6 +246,13 @@ function initDashboard() {
     fullConsole.innerHTML = '';
   });
 
+  // IP Laden & Speichern
+  const serverIpElem = document.getElementById('server-ip');
+  const savedIp = localStorage.getItem('webhostmc_custom_ip');
+  if (savedIp && serverIpElem) {
+    serverIpElem.textContent = savedIp;
+  }
+
   // IP KOPIEREN
   document.getElementById('copy-ip-btn').addEventListener('click', () => {
     const ip = document.getElementById('server-ip').textContent;
@@ -255,6 +262,20 @@ function initDashboard() {
       setTimeout(() => btn.textContent = '📋 Kopieren', 2000);
     });
   });
+
+  // IP ÄNDERN
+  const editIpBtn = document.getElementById('edit-ip-btn');
+  if (editIpBtn) {
+    editIpBtn.addEventListener('click', () => {
+      const currentIp = serverIpElem.textContent;
+      const newIp = prompt("Gib die neue Server-IP Adresse ein:", currentIp);
+      if (newIp && newIp.trim()) {
+        serverIpElem.textContent = newIp.trim();
+        localStorage.setItem('webhostmc_custom_ip', newIp.trim());
+        addLog(`[System]: Server-IP aktualisiert auf: ${newIp.trim()}`, '#38bdf8');
+      }
+    });
+  }
 
   // PLUGINS
   document.querySelectorAll('.btn-install-plugin').forEach(btn => {
