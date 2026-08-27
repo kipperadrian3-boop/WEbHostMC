@@ -15,10 +15,12 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Download Minecraft Server & Playit
+      - name: Start Minecraft Cloud Server & Tunnels
         run: |
           mkdir -p mc_server
+          mkdir -p /tmp/playit
           mkdir -p ~/.config/playit_gg
+          export XDG_RUNTIME_DIR=/tmp
           cd mc_server
 
           echo "⬇️ Lade Purpur 1.21.1 herunter..."
@@ -29,17 +31,14 @@ jobs:
           wget -q https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 -O playit
           chmod +x playit
 
-          echo ""
-          echo "=========================================================="
-          echo "🌐 STARTE CLOUD-TUNNEL (PLAYIT.GG)"
-          echo "=========================================================="
-          ./playit > playit.log 2>&1 &
-          sleep 5
+          # Start Playit with environment socket fix
+          ./playit > /tmp/playit.log 2>&1 &
+          sleep 6
 
           echo "=========================================================="
-          echo "👉 HIER IST DEIN PLAYIT-LINK (IP AKTIVIEREN):"
+          echo "🌐 DEINE SERVER-VERBINDUNG (PLAYIT.GG):"
           echo "=========================================================="
-          cat playit.log
+          cat /tmp/playit.log
           echo "=========================================================="
           echo ""
 
