@@ -15,26 +15,28 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Start Minecraft Server with All-Version Plugins & Tunnel
+      - name: Start Minecraft Server with All-Version Protocol Fix
         run: |
           mkdir -p mc_server/plugins
           cd mc_server
 
-          echo "⬇️ 1. Lade Purpur 1.21.1 Server..."
-          wget -q https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -O server.jar
+          echo "⬇️ 1. Lade Purpur 1.21.1 Server herunter..."
+          curl -sL https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -o server.jar
           echo "eula=true" > eula.txt
 
-          echo "⬇️ 2. Lade Multi-Version Plugins (ViaVersion & ViaBackwards)..."
-          # ViaVersion (Neuere Versionen)
-          wget -q https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar -O plugins/ViaVersion.jar || true
-          # ViaBackwards (Ältere Versionen wie 1.16, 1.12 etc.)
-          wget -q https://github.com/ViaVersion/ViaBackwards/releases/download/5.2.1/ViaBackwards-5.2.1.jar -O plugins/ViaBackwards.jar || true
-          # ViaRewind (Bis 1.8 / 1.7)
-          wget -q https://github.com/ViaVersion/ViaRewind/releases/download/3.0.7/ViaRewind-3.0.7.jar -O plugins/ViaRewind.jar || true
+          echo "⬇️ 2. Lade ViaVersion & Protocol Plugins (Damit JEDE Version joinen kann)..."
+          # ViaVersion (für alle neueren Versionen)
+          curl -sL https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar -o plugins/ViaVersion.jar
+          # ViaBackwards (für alle älteren Versionen bis 1.16, 1.12 etc.)
+          curl -sL https://github.com/ViaVersion/ViaBackwards/releases/download/5.2.1/ViaBackwards-5.2.1.jar -o plugins/ViaBackwards.jar
+          # ViaRewind (für Versionen bis 1.8 / 1.7)
+          curl -sL https://github.com/ViaVersion/ViaRewind/releases/download/3.0.7/ViaRewind-3.0.7.jar -o plugins/ViaRewind.jar
+
+          echo "Installierte Plugins:"
+          ls -la plugins/
 
           echo "⬇️ 3. Lade Cloud-Tunnel herunter..."
-          wget -q https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz
-          tar -xzf bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz
+          curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz | tar -xz
           chmod +x bore
 
           # Starte den Tunnel
@@ -43,7 +45,7 @@ jobs:
 
           echo ""
           echo "=========================================================="
-          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN 1.8 - 1.21):"
+          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN ERLAUBT):"
           echo "=========================================================="
           cat bore.log
           echo "=========================================================="
