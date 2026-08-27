@@ -17,22 +17,25 @@ jobs:
 
       - name: Download Minecraft Server & Playit
         run: |
-          mkdir mc_server
+          mkdir -p mc_server
+          mkdir -p ~/.config/playit_gg
           cd mc_server
-          echo "⬇️ Lade Server herunter..."
+
+          echo "⬇️ Lade Purpur 1.21.1 herunter..."
           wget -q https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -O server.jar
           echo "eula=true" > eula.txt
+
           echo "⬇️ Lade Playit Cloud-Tunnel herunter..."
           wget -q https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 -O playit
           chmod +x playit
-          echo ""
+
           echo "=========================================================="
-          echo "🌐 STARTE CLOUD-TUNNEL (PLAYIT.GG)"
+          echo "🌐 STARTE CLOUD-TUNNEL"
           echo "=========================================================="
-          ./playit &
-          sleep 4
-          echo ""
+          ./playit --stdout &
+          sleep 5
+
           echo "=========================================================="
-          echo "🚀 STARTE MINECRAFT SERVER 1.21.1 (6 GB RAM)"
+          echo "🚀 STARTE MINECRAFT SERVER (6 GB RAM)"
           echo "=========================================================="
           java -Xms4G -Xmx6G -jar server.jar nogui
