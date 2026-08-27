@@ -42,13 +42,14 @@ jobs:
           EOF
 
           echo "⬇️ 3. Lade alle Multi-Version & Bedrock Plugins herunter..."
-          # ViaVersion: Für alle neueren Versionen
-          curl -sL https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar -o plugins/ViaVersion.jar
-          # ViaBackwards: Für alle älteren Versionen
-          curl -sL https://github.com/ViaVersion/ViaBackwards/releases/download/5.2.1/ViaBackwards-5.2.1.jar -o plugins/ViaBackwards.jar
-          # GeyserMC: Für Bedrock / Handy / Konsole
+          echo "⬇️ 3. Lade alle Multi-Version & Bedrock Plugins herunter..."
+          # ViaVersion 5.11.0 (Neueste Version für 26.2 Support)
+          curl -sL https://github.com/ViaVersion/ViaVersion/releases/download/5.11.0/ViaVersion-5.11.0.jar -o plugins/ViaVersion.jar
+          # ViaBackwards 5.11.0
+          curl -sL https://github.com/ViaVersion/ViaBackwards/releases/download/5.11.0/ViaBackwards-5.11.0.jar -o plugins/ViaBackwards.jar
+          # GeyserMC
           curl -sL https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot -o plugins/Geyser-Spigot.jar
-          # Floodgate: Für Bedrock ohne Java-Zwang
+          # Floodgate
           curl -sL https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot -o plugins/floodgate-spigot.jar
 
           echo "Installierte Plugins:"
@@ -58,13 +59,8 @@ jobs:
           curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz | tar -xz
           chmod +x bore
 
-          # Starte den Tunnel mit Port 33305 und automatischem Retry (falls TIME_WAIT)
-          (
-            while ! ./bore local 25565 --to bore.pub --port 33305; do
-              echo "Port wird noch vom alten Server freigegeben, versuche es gleich erneut..."
-              sleep 5
-            done
-          ) > bore.log 2>&1 &
+          # Starte den Tunnel (Zufälliger Port, damit es keine 1.21.1 Fremd-Server Überschneidungen gibt!)
+          ./bore local 25565 --to bore.pub > bore.log 2>&1 &
           sleep 4
 
           echo ""
