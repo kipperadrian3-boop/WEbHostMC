@@ -29,13 +29,19 @@ jobs:
           wget -q https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-amd64 -O playit
           chmod +x playit
 
+          echo ""
           echo "=========================================================="
-          echo "🌐 STARTE CLOUD-TUNNEL"
+          echo "🌐 STARTE CLOUD-TUNNEL (PLAYIT.GG)"
           echo "=========================================================="
-          ./playit --stdout &
+          ./playit > playit.log 2>&1 &
           sleep 5
 
           echo "=========================================================="
-          echo "🚀 STARTE MINECRAFT SERVER (6 GB RAM)"
+          echo "👉 HIER IST DEIN PLAYIT-LINK (IP AKTIVIEREN):"
           echo "=========================================================="
+          cat playit.log
+          echo "=========================================================="
+          echo ""
+
+          echo "🚀 STARTE MINECRAFT SERVER (6 GB RAM)..."
           java -Xms4G -Xmx6G -jar server.jar nogui
