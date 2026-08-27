@@ -15,19 +15,19 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Start Minecraft Server with 1.21.4 & All Versions Support
+      - name: Start Minecraft Server with Universal Multi-Version & Bedrock Support
         run: |
           mkdir -p mc_server/plugins
           cd mc_server
 
-          echo "⬇️ 1. Lade neuesten Purpur 1.21.4 Server herunter..."
+          echo "⬇️ 1. Lade Purpur Server..."
           curl -sL https://api.purpurmc.org/v2/purpur/1.21.4/latest/download -o server.jar || curl -sL https://api.purpurmc.org/v2/purpur/1.21.1/latest/download -o server.jar
           echo "eula=true" > eula.txt
 
-          echo "⚙️ 2. Konfiguriere Server Properties..."
+          echo "⚙️ 2. Konfiguriere Server Properties (Offline Mode für alle Versionen)..."
           cat << 'EOF' > server.properties
           online-mode=false
-          motd=§a§lWebHostMC Server §7| §eAlle Versionen (1.8 - 1.21.4)
+          motd=§a§lWebHostMC Server §7| §eAlle Versionen Erlaubt (1.7 - 1.21.4 & Bedrock)
           server-port=25565
           max-players=50
           difficulty=normal
@@ -36,10 +36,20 @@ jobs:
           enable-status=true
           EOF
 
-          echo "⬇️ 3. Lade ViaVersion, ViaBackwards & ViaRewind..."
+          echo "⬇️ 3. Lade alle Multi-Version & Bedrock Plugins herunter..."
+          # ViaVersion: Für alle neueren Versionen (1.21.2, 1.21.3, 1.21.4, Snapshots)
           curl -sL https://github.com/ViaVersion/ViaVersion/releases/download/5.2.1/ViaVersion-5.2.1.jar -o plugins/ViaVersion.jar
+          # ViaBackwards: Für alle älteren Versionen (1.20, 1.19, 1.18, 1.16, 1.12 etc.)
           curl -sL https://github.com/ViaVersion/ViaBackwards/releases/download/5.2.1/ViaBackwards-5.2.1.jar -o plugins/ViaBackwards.jar
+          # ViaRewind: Für 1.8 & 1.7
           curl -sL https://github.com/ViaVersion/ViaRewind/releases/download/3.0.7/ViaRewind-3.0.7.jar -o plugins/ViaRewind.jar
+          # GeyserMC: Für Bedrock / Handy / Konsole
+          curl -sL https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot -o plugins/Geyser-Spigot.jar
+          # Floodgate: Für Bedrock ohne Java-Zwang
+          curl -sL https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot -o plugins/floodgate-spigot.jar
+
+          echo "Installierte Plugins:"
+          ls -la plugins/
 
           echo "⬇️ 4. Lade Cloud-Tunnel herunter..."
           curl -sL https://github.com/ekzhang/bore/releases/download/v0.5.2/bore-v0.5.2-x86_64-unknown-linux-musl.tar.gz | tar -xz
@@ -51,7 +61,7 @@ jobs:
 
           echo ""
           echo "=========================================================="
-          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN 1.8 - 1.21.4):"
+          echo "🔥 DEINE ECHTE MINECRAFT SERVER IP (ALLE VERSIONEN & BEDROCK):"
           echo "=========================================================="
           cat bore.log
           echo "=========================================================="
