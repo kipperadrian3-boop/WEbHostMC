@@ -1,44 +1,38 @@
 ======================================================================
       🌐 DEINE EIGENE MINECRAFT HOSTING-WEBSITE (WEBHOSTMC)
-    100% GRATIS • EIGENES GITHUB REPO • WELTWEIT ONLINE ERREICHBAR
+    100% GRATIS • BEREITS AUF GITHUB HOCHGELADEN • EIGENER HOST
 ======================================================================
 
-Ziel-Repository:
-https://github.com/kipperadrian3-boop/WEbHostMC.git
+✅ Ich habe deine Website bereits auf dein GitHub hochgeladen:
+   https://github.com/kipperadrian3-boop/WEbHostMC.git
 
 
 ----------------------------------------------------------------------
-👶 SCHRITT 1: DATEIEN IN DEIN GITHUB REPO HOCHLADEN
+👶 NUR NOCH 1 SCHRITT: WEBLINKS GRATIS AKTIVIEREN (Render.com)
 ----------------------------------------------------------------------
-1. Mache einen Doppelklick auf die Datei:
-   👉 PUSH_ZU_GITHUB.bat
-2. Warte kurz, bis dort "FERTIG HOCHGELADEN" steht.
-3. Deine Website ist jetzt vollständig auf GitHub gespeichert!
 
+1. Öffne im Browser:
+   👉 https://render.com
 
-----------------------------------------------------------------------
-👶 SCHRITT 2: SEITE 100% GRATIS ONLINE STELLEN (Render.com)
-----------------------------------------------------------------------
-(Damit deine Website eine weltweite Internetadresse bekommt – 0,00 €)
+2. Klicke oben rechts auf "Sign In" ➡️ "Sign in with GitHub".
+   (100% kostenlos, keine Kreditkarte nötig!)
 
-1. Gehe auf: https://render.com
-2. Klicke oben rechts auf "Sign In" / "Get Started" ➡️ wähle "GitHub"!
-3. Klicke auf den blauen Button "New +" ➡️ wähle "Web Service".
-4. Wähle dein Repository: "WEbHostMC" aus.
-5. Klicke ganz unten auf "Deploy Web Service"!
+3. Klicke auf den blauen Button:  "+ New" ➡️ "Web Service".
+
+4. Wähle dein Repository aus:  "WEbHostMC".
+
+5. Klicke ganz unten auf den blauen Button:  "Deploy Web Service".
 
 
 ----------------------------------------------------------------------
-🎉 FERTIG! DEINE EIGENE HOSTING-SEITE IST JETZT ONLINE!
+🎉 FERTIG! DEINE EIGENE HOSTING-WEBSITE IST JETZT LIVE!
 ----------------------------------------------------------------------
-Du erhältst eine weltweite Adresse wie:
-👉 https://webhostmc.onrender.com
+Du erhältst deinen eigenen Link (z. B. https://webhostmc.onrender.com).
 
-Zugangsdaten zum Einloggen auf deiner Website:
+Zugangsdaten zum Einloggen:
 • Benutzername:  admin
 • Passwort:      admin
-(Oder jeder beliebige Name)
 
-Von dort aus kannst du deinen Server jederzeit starten, stoppen,
-Befehle eingeben und Plugins verwalten – auch vom Handy aus!
+Du und deine Freunde können die Seite jetzt von jedem PC oder Handy
+öffnen und den Server steuern!
 ======================================================================
